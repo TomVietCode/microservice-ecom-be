@@ -3,6 +3,7 @@ import { ICategoryUseCase } from "../../interface";
 import { ErrDataNotFound, ErrInvalidPaging } from "../../../../share/models/base-error";
 import { PagingDTOShema } from "../../../../share/models/base-model";
 import { CategoryCondSchema, CategoryUpdateSchema } from "../../model/dto";
+import { Category } from "../../model/model";
 
 export class CategoryHttpService {
   constructor(private readonly usecase: ICategoryUseCase) {}
@@ -35,22 +36,15 @@ export class CategoryHttpService {
     }
   }
 
-  async getListCategoriesAPI(req: Request, res: Response) {
-    const { data: paging, error } = PagingDTOShema.safeParse(req.query)
-
-    if(error) {
-      res.status(400).json({
-        message: (ErrInvalidPaging as Error).message
-      })
-      return
-    }
-    
+  async getListCategoriesAPI(req: Request, res: Response) {    
     const cond = CategoryCondSchema.parse(req.query)
 
-    const categories = await this.usecase.getListCategories(cond, paging)
+    const result = await this.usecase.getListCategories(cond)
+
+    const categories = this.buildTree(result)
+
     res.status(200).json({
       data: categories,
-      paging: paging,
       filter: cond
     })
   }
@@ -87,5 +81,28 @@ export class CategoryHttpService {
         message: (error as Error).message
       })
     }
+  }
+
+  private buildTree(categories: Category[]): Category[] {
+    const categoryTree: Category[] = []
+    const mapChildren = new Map<string, Category[]>()
+
+    for(let i = 0; i < categories.length; i++) {
+      const category = categories[i]
+
+      if(!mapChildren.get(category.id)){
+        mapChildren.set(category.id, [])
+      }
+
+      category.children = mapChildren.get(category.id)
+      
+      if(!category.parentId) {
+        categoryTree.push(category)
+      } else {
+        const children = mapChildren.get(category.parentId)
+        children ? children.push(category) : mapChildren.set(category.parentId, [category]) 
+      }
+    }
+    return categoryTree
   }
 }

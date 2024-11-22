@@ -29,6 +29,7 @@ export class CategoryUseCase implements ICategoryUseCase{
       id: newId,
       name: parsedData!.name,
       position: 0,
+      parentId: parsedData!.parentId,
       image: parsedData!.image,
       description: parsedData!.description,
       status: ModelStatus.ACTIVE,
@@ -50,8 +51,8 @@ export class CategoryUseCase implements ICategoryUseCase{
     return data as Category
   }
 
-  async getListCategories(cond: CategoryCondDTO, paging: PagingDTO): Promise<Array<Category>> {
-    const data = await this.repository.list(cond, paging)
+  async getListCategories(cond: CategoryCondDTO): Promise<Array<Category>> {
+    const data = await this.repository.list(cond)
 
     return data
   }

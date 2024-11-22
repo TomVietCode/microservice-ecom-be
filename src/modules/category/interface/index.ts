@@ -5,14 +5,14 @@ import { Category } from "../model/model";
 export interface ICategoryUseCase {
   createNewCategory(data: CategoryCreateDTO): Promise<string>
   getDetailCategory(id: string): Promise<Category | null>
-  getListCategories(cond: CategoryCondDTO, paging: PagingDTO): Promise<Array<Category>>
+  getListCategories(cond: CategoryCondDTO): Promise<Array<Category>>
   updateCategory(id: string, data: CategoryUpdateDTO): Promise<boolean>
   deleteCategory(id: string, isHard: boolean): Promise<boolean>
 }
 
 export interface IQueryRepository {
   get(id: string): Promise<Category | null>
-  list(cond: CategoryCondDTO, paging: PagingDTO): Promise<Array<Category>>
+  list(cond: CategoryCondDTO): Promise<Array<Category>>
 }
 
 export interface ICommandRepository {

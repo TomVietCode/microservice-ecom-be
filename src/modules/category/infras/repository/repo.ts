@@ -24,14 +24,11 @@ export class MySQLCategoryRepository implements IRepository {
 
     return data.get({ plain: true }) as Category
   }
-  async list(cond: CategoryCondDTO, paging: PagingDTO): Promise<Array<Category>> {
-    const { page, limit } = paging
+  async list(cond: CategoryCondDTO): Promise<Array<Category>> {
     const condSQL = { ...cond, status: { [Op.ne]: ModelStatus.DELETED } }
 
     const rows = await this.sequelize.models[this.modelName].findAll({
       where: condSQL,
-      limit,
-      offset: (page - 1) * limit,
       order: [["id", "DESC"]],
     })
 
