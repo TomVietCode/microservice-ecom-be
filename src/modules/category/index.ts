@@ -4,6 +4,7 @@ import { Sequelize } from 'sequelize';
 import { CategoryHttpService } from './infras/transport/http-service';
 import { CategoryUseCase } from './usecase';
 import { MySQLCategoryRepository } from './infras/repository/repo';
+import { CreateBrandCmdHandler } from '../brand/usecase/create-brand';
 
 export const setupCategoryHexagon = (sequelize: Sequelize) => {
   init(sequelize)
