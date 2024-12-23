@@ -4,8 +4,8 @@ import { ModelStatus, PagingDTO } from "../models/base-model"
 
 export class BaseRepositorySequelize<Entity, UpdateDTO, Cond> implements IRepository<Entity, UpdateDTO, Cond>{
   constructor(
-    private readonly sequelize: Sequelize,
-    private readonly modelName: string
+    readonly sequelize: Sequelize,
+    readonly modelName: string
   ) {}
 
   async insert(data: Entity): Promise<boolean> {

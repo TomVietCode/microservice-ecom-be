@@ -10,20 +10,29 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/sequelize": "^4.28.20",
-    "@types/uuid": "^10.0.0",
+    "axios": "^1.7.9",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "module-alias": "^2.2.3",
     "mysql2": "^3.11.4",
     "sequelize": "^6.37.5",
     "uuid": "^11.0.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.9.0",
+    "@types/module-alias": "^2.0.4",
+    "@types/node": "^22.10.2",
+    "@types/sequelize": "^4.28.20",
+    "@types/uuid": "^10.0.0",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@modules": "./src/modules",
+    "@share": "./src/share"
   }
 }
