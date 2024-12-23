@@ -21,3 +21,11 @@ export interface ICommandHandler<Cmd, Result> {
 export interface IQueryHandler<Query, Result> {
   query(query: Query): Promise<Result>
 }
+
+export interface IUseCase<CreateDTO, UpdateDTO, Entity, Cond> {
+  create(data: CreateDTO): Promise<string>
+  getDetail(id: string): Promise<Entity | null>
+  update(id: string, data: UpdateDTO): Promise<boolean>
+  delete(id: string): Promise<boolean>
+  list(cond: Cond, paging: PagingDTO): Promise<Array<Entity>>
+}
