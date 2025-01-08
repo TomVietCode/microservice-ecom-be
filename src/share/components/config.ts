@@ -17,5 +17,9 @@ export const config = {
       idle: 60000
     },
     logging: false
+  },
+  acecessToken: {
+    secretKey: process.env.JWT_SECRET_KEY || "habujkdsnvdlajfewioasd",
+    expiresIn: "7d"
   }
 }

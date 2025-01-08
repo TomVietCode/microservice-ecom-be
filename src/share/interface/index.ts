@@ -29,3 +29,18 @@ export interface IUseCase<CreateDTO, UpdateDTO, Entity, Cond> {
   delete(id: string): Promise<boolean>
   list(cond: Cond, paging: PagingDTO): Promise<Array<Entity>>
 }
+
+// JWT TOKEN
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user"
+}
+
+export interface TokenPayload {
+  sub: string,
+  role: UserRole
+}
+export interface ITokenProvider {
+  generateToken(payload: TokenPayload): Promise<string>
+  verifyToken(token: string): Promise<TokenPayload | string>
+}
