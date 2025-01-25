@@ -13,9 +13,9 @@ class JWTService implements ITokenProvider {
   async generateToken(payload: TokenPayload): Promise<string> {
     return jwt.sign(payload, this.secretKey, { expiresIn: this.expiresIn })
   }
-  async verifyToken(token: string): Promise<TokenPayload | string> {
-    const decoded = jwt.verify(token, this.secretKey) as TokenPayload
-    return decoded
+  async verifyToken(token: string): Promise<TokenPayload | null> {
+    const decoded = jwt.verify(token, this.secretKey) as TokenPayload;
+    return decoded;
   }
 }
 

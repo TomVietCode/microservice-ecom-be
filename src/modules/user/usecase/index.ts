@@ -1,8 +1,8 @@
 import { PagingDTO } from "@share/models/base-model";
 import { IUserUseCase } from "../interface";
 import { UserRegistrationDTO, UserLoginDTO, User, UserCondDTO, UserUpdateDTO, UserRegistrationDTOSchema, Status, Gender, UserRole, UserLoginDTOSchema, userUpdateDTOSchema, userCondDTOSchema } from "../model/model";
-import { IRepository } from "@share/interface";
-import { ErrEmailExisted, ErrInvalidEmailAndPassword, ErrUserInactivated, ErrUserNotFound } from "../model/error";
+import { IRepository, TokenPayload } from "@share/interface";
+import { ErrEmailExisted, ErrInvalidEmailAndPassword, ErrInvalidToken, ErrUserInactivated, ErrUserNotFound } from "../model/error";
 import * as bcrypt from 'bcrypt';
 import { v7 } from "uuid";
 import { jwtProvider } from "@share/components/jwt";
@@ -71,6 +71,21 @@ export class UserUseCase implements IUserUseCase {
 
     const { salt, password, ...otherProps } = user
     return otherProps as User
+  }
+
+  async verifyToken(token: string): Promise<TokenPayload> {
+    const payload = await jwtProvider.verifyToken(token)
+    if(!payload) throw ErrInvalidToken
+
+    const user = await this.repository.get(payload.sub)
+    if(!user || user.status === Status.INACTIVE || user.status === Status.DELETED) {
+      throw ErrUserNotFound
+    }
+
+    return {
+      sub: user.id,
+      role: payload.role
+    }
   }
   
   async create(data: UserRegistrationDTO): Promise<string> {

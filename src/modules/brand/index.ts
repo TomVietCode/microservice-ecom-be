@@ -8,8 +8,10 @@ import { GetBrandDetailQuery } from "./usecase/get-brand-detail"
 import { UpdateBrandCmdHandler } from "./usecase/update-brand"
 import { DeleteBrandCmdHandler } from "./usecase/delete-brand"
 import { ListBrandQuery } from "./usecase/list-brand"
+import { ServiceContext } from "@share/interface/service-context"
+import { UserRole } from "@share/interface"
 
-export const setupBrandHexagon = (sequelize: Sequelize) => {
+export const setupBrandHexagon = (sequelize: Sequelize, sctx: ServiceContext) => {
   init(sequelize)
   const router = Router()
 
@@ -29,13 +31,16 @@ export const setupBrandHexagon = (sequelize: Sequelize) => {
     listBrandHandler,
   )
 
-  router.post("/brands", httpService.createApi.bind(httpService))
+  const mdlFactory = sctx.mdlFactory
+  const adminChecker = mdlFactory.allowRoles([UserRole.ADMIN])
+
+  router.post("/brands", mdlFactory.auth, adminChecker, httpService.createApi.bind(httpService))
 
   router.get("/brands/:id", httpService.getApi.bind(httpService))
 
-  router.patch("/brands/:id", httpService.updateApi.bind(httpService))
+  router.patch("/brands/:id", mdlFactory.auth, adminChecker, httpService.updateApi.bind(httpService))
 
-  router.delete("/brands/:id", httpService.deleteApi.bind(httpService))
+  router.delete("/brands/:id", mdlFactory.auth, adminChecker, httpService.deleteApi.bind(httpService))
 
   router.get("/brands", httpService.listApi.bind(httpService))
 
