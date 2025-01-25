@@ -8,6 +8,8 @@ import { sequelize } from "@share/components/sequelize"
 import { setupBrandHexagon } from "@modules/brand"
 import { setupProductHexagon } from "./modules/product"
 import { setupUserHexagon } from "./modules/user";
+import { TokenIntrospectRPCClient } from "./share/repository/verify-token.rpc";
+import { setupMiddlewares } from "./share/middlewares";
 
 (async () => {
   await sequelize.authenticate()
@@ -22,10 +24,13 @@ import { setupUserHexagon } from "./modules/user";
     console.log("oke")
   })
 
-  app.use("/v1", setupCategoryHexagon(sequelize))
-  app.use("/v1", setupBrandHexagon(sequelize))
-  app.use("/v1", setupProductHexagon(sequelize))
-  app.use("/v1", setupUserHexagon(sequelize))
+  const introspector = new TokenIntrospectRPCClient(process.env.VERIFY_TOKEN_URL as string)
+  const sctx = { mdlFactory: setupMiddlewares(introspector)}
+
+  app.use("/v1", setupCategoryHexagon(sequelize, sctx))
+  app.use("/v1", setupBrandHexagon(sequelize, sctx))
+  app.use("/v1", setupProductHexagon(sequelize, sctx))
+  app.use("/v1", setupUserHexagon(sequelize, sctx))
   
   app.listen(port, () => {
     console.log("Server is running on port " + port)

@@ -37,10 +37,24 @@ export enum UserRole {
 }
 
 export interface TokenPayload {
-  sub: string,
+  sub: string
   role: UserRole
 }
+
+export interface Requester extends TokenPayload {}
+
 export interface ITokenProvider {
   generateToken(payload: TokenPayload): Promise<string>
-  verifyToken(token: string): Promise<TokenPayload | string>
+  verifyToken(token: string): Promise<TokenPayload | null>
+}
+
+// Authorization
+export interface TokenIntrospectResult {
+  payload: TokenPayload | null
+  error?: Error
+  isOk: boolean
+}
+
+export interface ITokenIntrospect {
+  introspect(token: string): Promise<TokenIntrospectResult>
 }

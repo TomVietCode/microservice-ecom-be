@@ -8,3 +8,4 @@ export const ErrEmailExisted = new Error ('Email is already existed');
 export const ErrInvalidEmailAndPassword = new Error ('Invalid email and password');
 export const ErrUserInactivated = new Error ('User is inactivated or banned');
 export const ErrUserNotFound = new Error ('User not found');
+export const ErrInvalidToken = new Error ('Invalid token');
