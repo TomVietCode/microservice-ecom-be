@@ -10,6 +10,7 @@ import { setupProductHexagon } from "./modules/product"
 import { setupUserHexagon } from "./modules/user";
 import { TokenIntrospectRPCClient } from "./share/repository/verify-token.rpc";
 import { setupMiddlewares } from "./share/middlewares";
+import { setupCartHexagon } from "./modules/cart";
 
 (async () => {
   await sequelize.authenticate()
@@ -31,6 +32,7 @@ import { setupMiddlewares } from "./share/middlewares";
   app.use("/v1", setupBrandHexagon(sequelize, sctx))
   app.use("/v1", setupProductHexagon(sequelize, sctx))
   app.use("/v1", setupUserHexagon(sequelize, sctx))
+  app.use("/v1", setupCartHexagon(sequelize, sctx))
   
   app.listen(port, () => {
     console.log("Server is running on port " + port)

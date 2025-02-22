@@ -21,7 +21,6 @@ export const setupProductHexagon = (sequelize: Sequelize, sctx: ServiceContext):
     new RPCProductBrandRepository(config.rpc.productBrand)
   )
   const productCategorydRepository = new RPCProductCategoryRepository(config.rpc.productCategory)
-
   const productUseCase = new ProductUseCase(
     productRepository,
     productBrandRepository,
@@ -31,7 +30,8 @@ export const setupProductHexagon = (sequelize: Sequelize, sctx: ServiceContext):
   const productHTTPService = new ProductHTTPService(
     productUseCase,
     productBrandRepository,
-    productCategorydRepository
+    productCategorydRepository,
+    productRepository
   )
 
   const router = Router()
@@ -44,5 +44,7 @@ export const setupProductHexagon = (sequelize: Sequelize, sctx: ServiceContext):
   router.delete("/products/:id", mdlFactory.auth, adminChecker, productHTTPService.deleteApi.bind(productHTTPService))
   router.get("/products/", productHTTPService.listApi.bind(productHTTPService))
 
+  // RPC
+  router.post("/products/by-ids", productHTTPService.listProductByIdsApi.bind(productHTTPService))
   return router
 }

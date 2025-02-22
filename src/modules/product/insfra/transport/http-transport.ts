@@ -3,6 +3,7 @@ import { Product } from "../../model/model"
 import { IBrandQueryRepository, ICategoryQueryRepository, IProductUseCase } from "../../interface"
 import { Request, Response } from "express"
 import { BaseHttpService } from '@share/transport/http-service';
+import { IQueryRepository } from "@share/interface";
 
 export class ProductHTTPService extends BaseHttpService<
   ProductCreateDTO,
@@ -13,7 +14,8 @@ export class ProductHTTPService extends BaseHttpService<
   constructor(
     readonly useCase: IProductUseCase,
     readonly productBrandQuery: IBrandQueryRepository,
-    readonly productCategoryQuery: ICategoryQueryRepository
+    readonly productCategoryQuery: ICategoryQueryRepository,
+    readonly productQueryRepo: IQueryRepository<Product, ProductCondDTO>
   ) {
     super(useCase)
   }
@@ -40,5 +42,11 @@ export class ProductHTTPService extends BaseHttpService<
         message: (error as Error).message,
       })
     }
+  }
+
+  async listProductByIdsApi(req: Request, res: Response): Promise<void> {
+    const { ids } = req.body
+    const result = await this.productQueryRepo.listByIds(ids)
+    res.status(200).json({ data: result })
   }
 }

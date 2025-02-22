@@ -63,6 +63,21 @@ export class BaseRepositorySequelize<Entity, UpdateDTO, Cond> implements IReposi
     return rows as Entity[]
   }
 
+  async listByIds(ids: string[]): Promise<Array<Entity>> {
+    const rows = await this.sequelize.models[this.modelName].findAll({ where: { id: { [Op.in]: ids } } })
+
+    return rows.map((row) => {
+      const persistenceData = row.get({ plain: true });
+      const { created_at, updated_at, ...props } = persistenceData;
+
+      return {
+        ...props,
+        createdAt: persistenceData.created_at,
+        updatedAt: persistenceData.updated_at,
+      } as Entity;
+    });
+  }
+  
   async update(id: string, data: UpdateDTO): Promise<boolean> {
     await this.sequelize.models[this.modelName].update(data as any, {
       where: { id },
