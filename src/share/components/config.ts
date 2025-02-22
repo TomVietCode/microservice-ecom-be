@@ -2,6 +2,7 @@ export const config = {
   rpc: {
     productBrand: process.env.BASE_URL || 'http://localhost:3001',
     productCategory: process.env.BASE_URL || 'http://localhost:3001',
+    product: process.env.RPC_PRODUCT_URL || 'http://localhost:3001',
   },
   mysql: {
     database: process.env.DB_NAME || "",
