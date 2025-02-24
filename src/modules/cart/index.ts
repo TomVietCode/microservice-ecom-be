@@ -14,12 +14,14 @@ export function setupCartHexagon(sequelize: Sequelize, sctx: ServiceContext) {
   const cartRepo = new CartRepository(modelName, sequelize)
   const cartProductRPCRepo = new CartProductRPCRepo(config.rpc.product)
   const cartUseCase = new CartUseCase(cartRepo, cartRepo, cartProductRPCRepo)
-  const cartHTTPService = new CartHTTPService(cartUseCase)
+  const cartHTTPService = new CartHTTPService(cartUseCase, cartRepo, cartProductRPCRepo)
 
   const mdlFactory = sctx.mdlFactory
 
   const router = Router()  
 
+  router.get("/carts", mdlFactory.auth, cartHTTPService.listItemsAPI.bind(cartHTTPService))
+  router.patch("/carts", mdlFactory.auth, cartHTTPService.updateProductQuantitiesAPI.bind(cartHTTPService))
   router.post("/carts", mdlFactory.auth, cartHTTPService.addProductToCartAPI.bind(cartHTTPService))
   router.delete("/carts/:id", mdlFactory.auth, cartHTTPService.removeProductFromCartAPI.bind(cartHTTPService))
 

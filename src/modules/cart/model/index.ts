@@ -28,9 +28,8 @@ export const addCartItemDTOSchema = z.object({
 })
 
 export const updateCartItemDTOSchema = z.object({
-  userId: z.string().uuid(),
   productId: z.string().uuid(),
-  attribute: z.string(),
+  attribute: z.string().nullable().optional().default(""),
   quantity: z.number().min(1)
 })
 

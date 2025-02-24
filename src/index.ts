@@ -2,7 +2,7 @@ import "module-alias/register"
 
 import { config } from "dotenv"
 config();
-import express, { Request, Response } from "express"
+import express, { NextFunction, Request, Response } from "express"
 import { setupCategoryHexagon } from "@modules/category"
 import { sequelize } from "@share/components/sequelize"
 import { setupBrandHexagon } from "@modules/brand"
@@ -11,6 +11,7 @@ import { setupUserHexagon } from "./modules/user";
 import { TokenIntrospectRPCClient } from "./share/repository/verify-token.rpc";
 import { setupMiddlewares } from "./share/middlewares";
 import { setupCartHexagon } from "./modules/cart";
+import { responseErr } from "./share/app-error";
 
 (async () => {
   await sequelize.authenticate()
@@ -34,6 +35,11 @@ import { setupCartHexagon } from "./modules/cart";
   app.use("/v1", setupUserHexagon(sequelize, sctx))
   app.use("/v1", setupCartHexagon(sequelize, sctx))
   
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log("vao day")
+    responseErr(err, res)
+    return next()
+  })
   app.listen(port, () => {
     console.log("Server is running on port " + port)
   })
